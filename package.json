@@ -8,9 +8,10 @@
     "devStart": "nodemon server.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "Florian H.",
   "license": "ISC",
   "dependencies": {
+    "body-parser": "^1.19.0",
     "ejs": "^3.1.5",
     "express": "^4.17.1",
     "express-ejs-layouts": "^2.5.0",
