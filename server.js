@@ -1,17 +1,19 @@
 // For non-production environment load environment variables from .env
+import env from 'dotenv'
 if (process.env.NODE_ENV !== 'production') {
-    require('dotenv').config();
+    env.config();
 }
 
 // setup express
-const express = require("express")
+import express from "express"
 const app = express()
-const expressLayouts = require("express-ejs-layouts")
-const bodyParser = require('body-parser')
+import expressLayouts from "express-ejs-layouts"
+import bodyParser from 'body-parser'
 
 // controller setup
-const indexRouter = require('./routes/index')
-const authorRouter = require('./routes/authors')
+import indexRouter from './routes/index'
+import authorRouter from './routes/authors'
+import bookRouter from './routes/books'
 
 app.set('view engine', 'ejs')
 app.set('views', __dirname + '/views')
@@ -22,7 +24,7 @@ app.use(express.static('public'))
 app.use(bodyParser.urlencoded({limit: '10mb', extended: false}))
 
 // setup database
-const mongoose = require('mongoose')
+import mongoose from 'mongoose'
 mongoose.connect(process.env.DATABASE_URL, {useNewUrlParser: true, useUnifiedTopology: true})
 const db = mongoose.connection
 
@@ -33,6 +35,7 @@ db.once('open', () => console.log('Connected to Mongoose'))
 // controller setup
 app.use('/', indexRouter)
 app.use('/authors', authorRouter)
+app.use('/books', bookRouter)
 
 // start server
 app.listen(process.env.PORT || 3000)

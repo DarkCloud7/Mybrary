@@ -1,6 +1,6 @@
-const express = require('express')
-const router = express.Router()
-const Author = require('../models/author')
+import { Router } from 'express'
+import Author from '../models/author'
+const router = Router()
 
 // Get all authors
 router.get('/', async (req, res) => {
@@ -37,9 +37,9 @@ router.post('/', async (req, res) => {
     } catch (error) {
         res.render('authors/new', {
             author: author,
-            errorMessage: 'Error creating Author',
+            errorMessage: 'Error creating Author.'
         })
     }
 })
 
-module.exports = router
+export default router
