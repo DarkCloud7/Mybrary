@@ -1,4 +1,5 @@
 import { Schema, model } from 'mongoose'
+import path from 'path'
 
 export const coverImageBasePath = 'uploads/bookCovers'
 
@@ -33,6 +34,11 @@ const bookSchema = new Schema({
         required: true,
         ref: 'Author'
     }
+})
+
+bookSchema.virtual('coverImagePath').get(function () {
+    const imageName = (this.coverImageName) || 'image-not-found.png'
+    return path.join(coverImageBasePath, imageName)
 })
 
 export default model('Book', bookSchema)
