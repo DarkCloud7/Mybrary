@@ -1,20 +1,7 @@
 import { Router } from 'express'
 const router = Router()
-import fileSytem from 'fs'
-import Book, { coverImageBasePath } from '../models/book.js'
+import Book from '../models/book.js'
 import Author from '../models/author'
-
-// Configure middleware for book cover image upload
-import multer from 'multer'
-import path from 'path'
-const uploadPath = path.join('public', coverImageBasePath)
-const imageMimeTypes = ['image/jpeg', 'image/png', 'image/gif']
-const coverImageHandler = multer({
-    dest: uploadPath,
-    fileFilter: (req, file, callback) => {
-        callback(null, imageMimeTypes.includes(file.mimetype))
-    }
-}).single('cover')
 
 // Get all books
 router.get('/', async (req, res) => {
@@ -35,16 +22,8 @@ router.get('/new', async (req, res) => {
 })
 
 // Post new book
-router.post('/', coverImageHandler, async (req, res) => {
-    const fileName = (req.file != null) ? req.file.filename : null;
-    const book = new Book({
-        title: req.body.title,
-        authorId: req.body.authorId,
-        pageCount: req.body.pageCount,
-        description: req.body.description,
-        publishDate: new Date(req.body.publishDate),
-        coverImageName: fileName,
-    })
+router.post('/', async (req, res) => {
+    const book = createBookFromRequest(req)
 
     try {
         const newBook = await book.save()
@@ -52,15 +31,23 @@ router.post('/', coverImageHandler, async (req, res) => {
         // res.redirect(`books/${newBook.id}`)    
         res.redirect('books')
     } catch (error) {
-        if (book.coverImageName != null) {
-            removeBookCover(book.coverImageName)
-        }
         renderNewBookPage(res, book, error)
     }
-
 })
 
 export default router
+
+function createBookFromRequest(req) {
+    const book = new Book({
+        title: req.body.title,
+        authorId: req.body.authorId,
+        pageCount: req.body.pageCount,
+        description: req.body.description,
+    })
+    book.publishDate = new Date(req.body.publishDate),
+    book.setCoverByBase64String(req.body.cover)
+    return book
+}
 
 function queryBooks(req) {
     const bookQuery = Book.find()
@@ -85,13 +72,4 @@ async function renderNewBookPage(res, book, error) {
     } catch (error) {
         res.redirect('/')
     }
-}
-
-function removeBookCover(fileName) {
-    const imagePath = path.join(uploadPath, fileName)
-    fileSytem.unlink(imagePath, error => {
-        if (error) {
-            console.error(error)
-        }
-    })
 }

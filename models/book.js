@@ -1,7 +1,6 @@
 import { Schema, model } from 'mongoose'
-import path from 'path'
 
-export const coverImageBasePath = 'uploads/bookCovers'
+const coverImageMimeTypes = ['image/jpeg', 'image/png', 'image/gif']
 
 const bookSchema = new Schema({
     title: {
@@ -25,9 +24,13 @@ const bookSchema = new Schema({
         required: true,
         default: Date.now
     },
-    coverImageName: {
-        type: String,
+    coverImage: {
+        type: Buffer,
         required: true
+    },
+    coverImageType: {
+        type: String,
+        required:true
     },
     authorId: {
         type: Schema.Types.ObjectId,
@@ -36,9 +39,19 @@ const bookSchema = new Schema({
     }
 })
 
-bookSchema.virtual('coverImagePath').get(function () {
-    const imageName = (this.coverImageName) || 'image-not-found.png'
-    return path.join(coverImageBasePath, imageName)
+bookSchema.virtual('coverImageSource').get(function () {
+    if (this.coverImage && this.coverImageType) {
+        return `data:${this.coverImageType};charset=utf-8;base64,${this.coverImage.toString('base64')}`
+    }
 })
+
+bookSchema.methods.setCoverByBase64String = function(base64EncodedString){
+    if(!base64EncodedString) return
+    const cover = JSON.parse(base64EncodedString)
+    if(cover && coverImageMimeTypes.includes(cover.type)){
+        this.coverImage = new Buffer.from(cover.data, 'base64')
+        this.coverImageType = cover.type
+    }
+}
 
 export default model('Book', bookSchema)
