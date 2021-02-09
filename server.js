@@ -26,7 +26,9 @@ app.set('layout', 'layouts/layout')
 // middleware
 import expressLayouts from "express-ejs-layouts"
 import bodyParser from 'body-parser'
+import methodOverride from 'method-override'
 app.use(express.static('public'))
+app.use(methodOverride('_method'))
 app.use(expressLayouts)
 app.use(bodyParser.urlencoded({limit: '10mb', extended: false}))
 
@@ -39,5 +41,5 @@ app.use('/authors', authorRouter)
 app.use('/books', bookRouter)
 
 // start server
-app.listen(process.env.PORT || 3000)
+app.listen(process.env.PORT || 300)
 //#endregion
