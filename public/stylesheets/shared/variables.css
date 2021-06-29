@@ -4,4 +4,5 @@
     --color-bg-light: hsl(var(--color-base-hue), 100%, 16%);
     --color-text-light: hsl(var(--color-base-hue), 100%, 87%);
     --color-danger-hue: 0;
+    --main-font: 'Gotham Rounded';
 }
