@@ -26,6 +26,10 @@
     flex-grow: 0;
 }
 
+.form-row-end {
+    justify-content: flex-end;
+}
+
 .form-item>label {
     font-size: var(--form-label-font-size);
     margin-bottom: .25rem;
@@ -63,7 +67,7 @@
 
 .filepond--root {
     font-family: var(--main-font);
-    margin-bottom: 0;
+    margin-bottom: 0px;
 }
 
 .filepond--panel-root {
