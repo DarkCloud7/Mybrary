@@ -7,7 +7,7 @@ if (process.env.NODE_ENV !== 'production') {
 //#region setup database
 // connection
 import mongoose from 'mongoose'
-mongoose.connect(process.env.DATABASE_URL, {useNewUrlParser: true, useUnifiedTopology: true})
+mongoose.connect(process.env.DATABASE_URL, { useNewUrlParser: true, useUnifiedTopology: true })
 const db = mongoose.connection
 
 // logging
@@ -30,7 +30,7 @@ import methodOverride from 'method-override'
 app.use(express.static('public'))
 app.use(methodOverride('_method'))
 app.use(expressLayouts)
-app.use(bodyParser.urlencoded({limit: '10mb', extended: false}))
+app.use(bodyParser.urlencoded({ limit: '10mb', extended: false }))
 
 // controller setup
 import indexRouter from './routes/index'
